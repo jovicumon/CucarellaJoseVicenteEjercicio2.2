@@ -76,14 +76,14 @@ public class Main {
         Event event = new Event(title, date, priority);
 
         System.out.print("¿Quieres añadir tareas? (s/n): ");
-        if (scanner.nextLine().equalsIgnoreCase("s")) {
-            while (true) {
-                System.out.print("Introduce la descripción de la tarea: ");
-                event.addTask(new EventTask(scanner.nextLine()));
+        boolean addingTasks = scanner.nextLine().equalsIgnoreCase("s");
 
-                System.out.print("¿Agregar otra tarea? (s/n): ");
-                if (!scanner.nextLine().equalsIgnoreCase("s")) break;
-            }
+        while (addingTasks) {
+            System.out.print("Introduce la descripción de la tarea: ");
+            event.addTask(new EventTask(scanner.nextLine()));
+
+            System.out.print("¿Agregar otra tarea? (s/n): ");
+            addingTasks = scanner.nextLine().equalsIgnoreCase("s");
         }
 
         events.add(event);
