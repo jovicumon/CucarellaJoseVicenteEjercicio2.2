@@ -70,5 +70,4 @@ public class Event {
     public ArrayList<EventTask> getTasks() {
         return tasks;
     }
-
 }
