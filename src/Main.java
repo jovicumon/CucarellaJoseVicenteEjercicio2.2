@@ -26,6 +26,7 @@ public class Main {
                     listEvents();
                     break;
                 case "4":
+                    listEvents();
                     toggleTaskCompletion();
                     break;
                 case "5":
@@ -47,32 +48,70 @@ public class Main {
         System.out.print("Opción: ");
     }
 
+    /**
+     * Método para añadir un nuevo evento.
+     * Solicita al usuario el título del evento, la fecha (día, mes y año), y la prioridad (HIGH, MEDIUM o LOW).
+     * Valida de forma interactiva cada parte de la fecha hasta que se introduzca correctamente.
+     * También permite al usuario añadir tareas opcionales asociadas al evento.
+     * Detalles de validación:
+     * - El día debe estar entre 1 y 31.
+     * - El mes debe estar entre 1 y 12.
+     * - El año debe ser una fecha válida dentro del rango permitido (5 años a partir de hoy).
+     * - La prioridad debe ser HIGH, MEDIUM o LOW.
+     */
     private static void addEvent() {
         System.out.print("Introduce el título del evento: ");
         String title = scanner.nextLine();
 
+        // Validar fecha del evento
         LocalDate date = null;
+        Integer dia = null; // Variables auxiliares para validar individualmente cada dato
+        Integer mes = null;
+        Integer anio = null;
+
         while (date == null) {
             try {
-                System.out.print("Introduce el día del evento: ");
-                int dia = Integer.parseInt(scanner.nextLine());
+                if (anio == null) {
+                    System.out.print("Introduce el año del evento: ");
+                    anio = Integer.parseInt(scanner.nextLine());
+                }
 
-                System.out.print("Introduce el mes del evento: ");
-                int mes = Integer.parseInt(scanner.nextLine());
+                if (mes == null) {
+                    System.out.print("Introduce el mes del evento: ");
+                    mes = Integer.parseInt(scanner.nextLine());
+                    if (mes < 1 || mes > 12) {
+                        System.out.println("El mes tiene que estar entre 1 y 12.");
+                        mes = null; // Reiniciar si no es correcto
+                        continue;
+                    }
+                }
 
-                System.out.print("Introduce el año del evento: ");
-                int anio = Integer.parseInt(scanner.nextLine());
+                if (dia == null) {
+                    System.out.print("Introduce el día del evento: ");
+                    dia = Integer.parseInt(scanner.nextLine());
+                    if (dia < 1 || dia > 31) {
+                        System.out.println("El día tiene que estar entre 1 y 31.");
+                        dia = null; // Reiniciar si no es correcto
+                        continue;
+                    }else if (!ControlFecha.esFechaDentroRango(dia, mes, anio, 5)){
+                        System.out.println("El día no es válido para el mes y año especificados.");
+                        dia = null;
+                        continue;
+                    }
+                }
 
                 if (ControlFecha.esFechaDentroRango(dia, mes, anio, 5)) {
                     date = LocalDate.of(anio, mes, dia);
                 } else {
                     System.out.println("La fecha no es válida o está fuera del rango permitido (5 años a partir de hoy).");
+                    anio = null; // Reiniciar si no es correcto
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Entrada inválida. Asegúrate de introducir números para el día, mes y año.");
             }
         }
 
+        // Validar prioridad del evento
         System.out.print("Introduce la prioridad (HIGH, MEDIUM, LOW): ");
         Event.Priority priority = null;
         while (priority == null) {
@@ -83,8 +122,10 @@ public class Main {
             }
         }
 
+        // Crear el evento con los datos válidos
         Event event = new Event(title, date, priority);
 
+        // Añadir tareas opcionales
         System.out.print("¿Quieres añadir tareas? (s/n): ");
         boolean addingTasks = scanner.nextLine().equalsIgnoreCase("s");
 
@@ -96,9 +137,11 @@ public class Main {
             addingTasks = scanner.nextLine().equalsIgnoreCase("s");
         }
 
+        // Añadir el evento a la lista global
         events.add(event);
         System.out.println("Evento añadido correctamente.");
     }
+
 
     private static void deleteEvent() {
         System.out.print("Introduce el título del evento a borrar: ");
