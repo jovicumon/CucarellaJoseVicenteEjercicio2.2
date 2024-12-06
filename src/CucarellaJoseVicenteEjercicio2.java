@@ -7,7 +7,7 @@ import java.util.Scanner;
  * Permite al usuario gestionar eventos, incluyendo la creación, eliminación, listado y la manipulación de tareas asociadas a los eventos.
  */
 
-public class Main {
+public class CucarellaJoseVicenteEjercicio2 {
     private static final ArrayList<Event> events = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
 
