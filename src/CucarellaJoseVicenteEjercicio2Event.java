@@ -7,11 +7,11 @@ import java.util.ArrayList;
  * para permitir que los campos puedan ser modificados en caso necesario.
  */
 
-public class Event {
+public class CucarellaJoseVicenteEjercicio2Event {
     private String title;
     private LocalDate date;
     private Priority priority;
-    private ArrayList<EventTask> tasks;
+    private ArrayList<CucarellaJoseVicenteEjercicio2EventTask> tasks;
 
     /**
      * Enumeración que define la prioridad del evento.
@@ -32,7 +32,7 @@ public class Event {
      * @param priority Prioridad del evento. No puede ser {@code null}.
      */
 
-    public Event(String title, LocalDate date, Priority priority) {
+    public CucarellaJoseVicenteEjercicio2Event(String title, LocalDate date, Priority priority) {
         this.title = title;
         this.date = date;
         this.priority = priority;
@@ -44,7 +44,7 @@ public class Event {
      * @param task Tarea a agregar. No puede ser {@code null}.
      */
 
-    public void addTask(EventTask task) {
+    public void addTask(CucarellaJoseVicenteEjercicio2EventTask task) {
         tasks.add(task);
     }
 
@@ -57,7 +57,7 @@ public class Event {
 
     @Override
     public String toString() {
-        long completedTasks = tasks.stream().filter(EventTask::isCompleted).count();
+        long completedTasks = tasks.stream().filter(CucarellaJoseVicenteEjercicio2EventTask::isCompleted).count();
         return String.format("Evento: %s | Fecha: %s | Prioridad: %s | Tareas completadas: %d/%d",
                 title, date, priority, completedTasks, tasks.size());
     }
@@ -76,7 +76,7 @@ public class Event {
      * @return Lista de tareas del evento.
      */
 
-    public ArrayList<EventTask> getTasks() {
+    public ArrayList<CucarellaJoseVicenteEjercicio2EventTask> getTasks() {
         return tasks;
     }
 }

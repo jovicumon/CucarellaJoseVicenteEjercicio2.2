@@ -1,14 +1,15 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.DateTimeException;
 
 /**
  * Clase principal que gestiona el menú de opciones.
  * Permite al usuario gestionar eventos, incluyendo la creación, eliminación, listado y la manipulación de tareas asociadas a los eventos.
  */
 
-public class CucarellaJoseVicenteEjercicio2 {
-    private static final ArrayList<Event> events = new ArrayList<>();
+public class CucarellaJoseVicenteEjercicio2Main {
+    private static final ArrayList<CucarellaJoseVicenteEjercicio2Event> events = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
 
     /**
@@ -105,14 +106,14 @@ public class CucarellaJoseVicenteEjercicio2 {
                         System.out.println("El día tiene que estar entre 1 y 31.");
                         dia = null; // Reiniciar si no es correcto
                         continue;
-                    }else if (!ControlFecha.esFechaDentroRango(dia, mes, anio, 5)){
+                    }else if (!esFechaDentroRango(dia, mes, anio, 5)){
                         System.out.println("El día no es válido para el mes y año especificados.");
                         dia = null;
                         continue;
                     }
                 }
 
-                if (ControlFecha.esFechaDentroRango(dia, mes, anio, 5)) {
+                if (esFechaDentroRango(dia, mes, anio, 5)) {
                     date = LocalDate.of(anio, mes, dia);
                 } else {
                     System.out.println("La fecha no es válida o está fuera del rango permitido (5 años a partir de hoy).");
@@ -125,17 +126,17 @@ public class CucarellaJoseVicenteEjercicio2 {
 
         // Validar prioridad del evento
         System.out.print("Introduce la prioridad (HIGH, MEDIUM, LOW): ");
-        Event.Priority priority = null;
+        CucarellaJoseVicenteEjercicio2Event.Priority priority = null;
         while (priority == null) {
             try {
-                priority = Event.Priority.valueOf(scanner.nextLine().toUpperCase());
+                priority = CucarellaJoseVicenteEjercicio2Event.Priority.valueOf(scanner.nextLine().toUpperCase());
             } catch (IllegalArgumentException e) {
                 System.out.println("Prioridad incorrecta. Introduce HIGH, MEDIUM o LOW.");
             }
         }
 
         // Crear el evento con los datos válidos
-        Event event = new Event(title, date, priority);
+        CucarellaJoseVicenteEjercicio2Event event = new CucarellaJoseVicenteEjercicio2Event(title, date, priority);
 
         // Añadir tareas opcionales
         System.out.print("¿Quieres añadir tareas? (s/n): ");
@@ -143,7 +144,7 @@ public class CucarellaJoseVicenteEjercicio2 {
 
         while (addingTasks) {
             System.out.print("Introduce la descripción de la tarea: ");
-            event.addTask(new EventTask(scanner.nextLine()));
+            event.addTask(new CucarellaJoseVicenteEjercicio2EventTask(scanner.nextLine()));
 
             System.out.print("¿Agregar otra tarea? (s/n): ");
             addingTasks = scanner.nextLine().equalsIgnoreCase("s");
@@ -195,7 +196,7 @@ public class CucarellaJoseVicenteEjercicio2 {
         System.out.print("Introduce el título del evento: ");
         String title = scanner.nextLine();
 
-        Event event = events.stream()
+        CucarellaJoseVicenteEjercicio2Event event = events.stream()
                 .filter(e -> e.getTitle().equalsIgnoreCase(title))
                 .findFirst()
                 .orElse(null);
@@ -205,7 +206,7 @@ public class CucarellaJoseVicenteEjercicio2 {
             return;
         }
 
-        ArrayList<EventTask> tasks = event.getTasks();
+        ArrayList<CucarellaJoseVicenteEjercicio2EventTask> tasks = event.getTasks();
         if (tasks.isEmpty()) {
             System.out.println("Este evento no tiene tareas.");
             return;
@@ -220,11 +221,41 @@ public class CucarellaJoseVicenteEjercicio2 {
         int taskIndex = Integer.parseInt(scanner.nextLine()) - 1;
 
         if (taskIndex >= 0 && taskIndex < tasks.size()) {
-            EventTask task = tasks.get(taskIndex);
+            CucarellaJoseVicenteEjercicio2EventTask task = tasks.get(taskIndex);
             task.setCompleted(!task.isCompleted());
             System.out.println("Tarea actualizada correctamente.");
         } else {
             System.out.println("Número de tarea inválido.");
+        }
+    }
+
+    /**
+     * Comprueba si una fecha es válida y está dentro de un rango permitido.
+     * Esta función verifica que la fecha proporcionada no sea antes de la fecha actual
+     * ni después de un número máximo de años en el futuro especificado.
+     * @param dia         El día del mes (1-31). Debe ser un número válido para el mes especificado.
+     * @param mes         El mes del año (1-12). Debe ser un número válido entre 1 y 12.
+     * @param anio        El año de la fecha. Debe ser un año válido.
+     * @param rangoFuturo El número máximo de años en el futuro permitidos. Este valor debe ser positivo.
+     *                    Define el rango máximo de la fecha permitida a partir de la fecha actual.
+     * @return true si la fecha es válida y está dentro del rango permitido, false en caso contrario.
+     * Si la fecha es inválida (por ejemplo, día fuera del rango para el mes, fecha incorrecta),
+     * o si la fecha está fuera del rango permitido (más allá del rango de años futuro especificado),
+     * el método retornará {@code false}.
+     */
+
+    public static boolean esFechaDentroRango(int dia, int mes, int anio, int rangoFuturo) {
+        try {
+            // Intentar crear una fecha con los parámetros proporcionados
+            LocalDate fecha = LocalDate.of(anio, mes, dia);
+            LocalDate hoy = LocalDate.now();
+            LocalDate maxFecha = hoy.plusYears(rangoFuturo);
+
+            // Comprobar si la fecha está dentro del rango permitido
+            return !fecha.isBefore(hoy) && !fecha.isAfter(maxFecha);
+        } catch (DateTimeException e) {
+            // Si la fecha no es válida (por ejemplo, el día no existe para el mes/año dado)
+            return false;
         }
     }
 }

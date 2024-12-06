@@ -4,7 +4,7 @@
  * no se hará esta modificación para permitir modificar los datos de la tarea en el futuro.
  */
 
-public class EventTask {
+public class CucarellaJoseVicenteEjercicio2EventTask {
     private String text;
     private boolean isCompleted;
 
@@ -14,7 +14,7 @@ public class EventTask {
      * @param text Descripción de la tarea. No puede ser {@code null}.
      */
 
-    public EventTask(String text) {
+    public CucarellaJoseVicenteEjercicio2EventTask(String text) {
         this.text = text;
         this.isCompleted = false;
     }
