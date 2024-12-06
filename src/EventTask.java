@@ -1,4 +1,5 @@
 
+
 /**
  * Clase que representa una tarea asociada a un evento.
  * aunque el warning nos indica que text deberia ser final
