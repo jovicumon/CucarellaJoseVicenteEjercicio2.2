@@ -4,11 +4,18 @@ import java.util.Scanner;
 
 /**
  * Clase principal que gestiona el menú de opciones.
+ * Permite al usuario gestionar eventos, incluyendo la creación, eliminación, listado y la manipulación de tareas asociadas a los eventos.
  */
 
 public class Main {
     private static final ArrayList<Event> events = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
+
+    /**
+     * Método principal que ejecuta el menú de opciones.
+     * Controla el flujo de ejecución y las opciones que el usuario puede seleccionar.
+     * El menú incluye opciones para añadir, borrar, listar eventos, y marcar tareas como completadas.
+     */
 
     public static void main(String[] args) {
         while (true) {
@@ -27,7 +34,7 @@ public class Main {
                     break;
                 case "4":
                     listEvents();
-                    toggleTaskCompletion();
+                    completeTask();
                     break;
                 case "5":
                     System.out.println("Saliendo del programa...");
@@ -37,6 +44,11 @@ public class Main {
             }
         }
     }
+
+    /**
+     * Muestra el menú de opciones al usuario.
+     * Incluye opciones para añadir, borrar, listar eventos, marcar tareas y salir del programa.
+     */
 
     private static void printMenu() {
         System.out.println("\nBienvenido a Event Planner. Seleccione una opción:");
@@ -107,7 +119,7 @@ public class Main {
                     anio = null; // Reiniciar si no es correcto
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Entrada inválida. Asegúrate de introducir números para el día, mes y año.");
+                System.out.println("Entrada inválida. Asegúrate de introducir valores númericos para el día, mes y año.");
             }
         }
 
@@ -118,7 +130,7 @@ public class Main {
             try {
                 priority = Event.Priority.valueOf(scanner.nextLine().toUpperCase());
             } catch (IllegalArgumentException e) {
-                System.out.println("Prioridad inválida. Introduce HIGH, MEDIUM o LOW.");
+                System.out.println("Prioridad incorrecta. Introduce HIGH, MEDIUM o LOW.");
             }
         }
 
@@ -142,6 +154,11 @@ public class Main {
         System.out.println("Evento añadido correctamente.");
     }
 
+    /**
+     * Método para borrar un evento por su título.
+     * Si el evento existe, se elimina de la lista de eventos registrados.
+     * Si no se encuentra el evento, se muestra un mensaje de error.
+     */
 
     private static void deleteEvent() {
         System.out.print("Introduce el título del evento a borrar: ");
@@ -155,6 +172,11 @@ public class Main {
         }
     }
 
+    /**
+     * Método para listar todos los eventos registrados.
+     * Si no hay eventos, muestra un mensaje indicándolo.
+     */
+
     private static void listEvents() {
         if (events.isEmpty()) {
             System.out.println("No hay eventos registrados.");
@@ -163,7 +185,13 @@ public class Main {
         events.forEach(System.out::println);
     }
 
-    private static void toggleTaskCompletion() {
+    /**
+     * Método para marcar o desmarcar una tarea de un evento como completada.
+     * Solicita al usuario el título del evento, busca el evento correspondiente,
+     * y luego permite marcar o desmarcar tareas como completadas.
+     */
+
+    private static void completeTask() {
         System.out.print("Introduce el título del evento: ");
         String title = scanner.nextLine();
 
