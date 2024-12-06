@@ -1,7 +1,6 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.format.DateTimeParseException;
 
 /**
  * Clase principal que gestiona el menú de opciones.
@@ -54,12 +53,23 @@ public class Main {
 
         LocalDate date = null;
         while (date == null) {
-            System.out.print("Introduce la fecha (YYYY-MM-DD): ");
-            String dateInput = scanner.nextLine();
             try {
-                date = LocalDate.parse(dateInput);
-            } catch (DateTimeParseException e) {
-                System.out.println("Formato de fecha inválido. Asegúrate de usar el formato YYYY-MM-DD.");
+                System.out.print("Introduce el día del evento: ");
+                int dia = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Introduce el mes del evento: ");
+                int mes = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Introduce el año del evento: ");
+                int anio = Integer.parseInt(scanner.nextLine());
+
+                if (ControlFecha.esFechaDentroRango(dia, mes, anio, 5)) {
+                    date = LocalDate.of(anio, mes, dia);
+                } else {
+                    System.out.println("La fecha no es válida o está fuera del rango permitido (5 años a partir de hoy).");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Asegúrate de introducir números para el día, mes y año.");
             }
         }
 

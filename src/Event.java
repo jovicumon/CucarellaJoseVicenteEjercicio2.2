@@ -3,6 +3,9 @@ import java.util.ArrayList;
 
 /**
  * Clase que representa un evento.
+ * aunque nos indica los warnings como que puedan ser final
+ * vamos a dejarlo así para que puedan modificar estos
+ * campos en caso necesario
  */
 
 public class Event {

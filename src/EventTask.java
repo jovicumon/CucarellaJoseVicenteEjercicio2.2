@@ -1,6 +1,9 @@
 
 /**
  * Clase que representa una tarea asociada a un evento.
+ * aunque el warning nos indica que text deberia ser final
+ * no la vamos a modificar puesto que así podremos
+ * modificar los datos de esta entrada
  */
 
 public class EventTask {
