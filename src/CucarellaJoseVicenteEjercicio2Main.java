@@ -28,6 +28,7 @@ public class CucarellaJoseVicenteEjercicio2Main {
                     addEvent();
                     break;
                 case "2":
+                    listEvents();
                     deleteEvent();
                     break;
                 case "3":
