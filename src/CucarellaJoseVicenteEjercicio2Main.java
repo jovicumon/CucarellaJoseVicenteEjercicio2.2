@@ -89,7 +89,7 @@ public class CucarellaJoseVicenteEjercicio2Main {
 
             // Verificar que el año esté dentro del rango válido (entre el año actual y +5 años)
             if (anio < currentYear || anio > currentYear + 5) {
-                System.out.println("El año máximo debe ser en el que estamos o +5");
+                System.out.println("El año debe estar entre " + currentYear + " y " + (currentYear + 5) + " (inclusive).");
                 anio = null; // Reiniciar si no es correcto
             }
         }
