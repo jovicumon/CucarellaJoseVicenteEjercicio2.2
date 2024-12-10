@@ -76,7 +76,8 @@ public class CucarellaJoseVicenteEjercicio2Main {
         Integer anio = null;
 
         // Validar año
-        while (anio == null) {
+        boolean anioValido = false;
+        while (!anioValido) {
             System.out.print("Introduce el año del evento: ");
             try {
                 anio = Integer.parseInt(scanner.nextLine());
@@ -89,9 +90,10 @@ public class CucarellaJoseVicenteEjercicio2Main {
             int currentYear = LocalDate.now().getYear();
 
             // Verificar que el año esté dentro del rango válido (entre el año actual y +5 años)
-            if (anio < currentYear || anio > currentYear + 5) {
+            if (anio >= currentYear && anio <= currentYear + 5) {
+                anioValido = true; // Reiniciar si no es correcto
+            }else{
                 System.out.println("El año debe estar entre " + currentYear + " y " + (currentYear + 5) + " (inclusive).");
-                anio = null; // Reiniciar si no es correcto
             }
         }
 
