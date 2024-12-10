@@ -27,6 +27,7 @@ public class CucarellaJoseVicenteEjercicio2Main {
                     addEvent();
                     break;
                 case "2":
+                    listEvents();
                     deleteEvent();
                     break;
                 case "3":
@@ -46,6 +47,8 @@ public class CucarellaJoseVicenteEjercicio2Main {
         }
     }
 
+
+
     /**
      * Muestra el menú de opciones al usuario.
      * Incluye opciones para añadir, borrar, listar eventos, marcar tareas y salir del programa.
@@ -59,6 +62,8 @@ public class CucarellaJoseVicenteEjercicio2Main {
         System.out.println("[5] Salir");
         System.out.print("Opción: ");
     }
+
+
 
     /**
      * Método para añadir un nuevo evento.
@@ -216,22 +221,33 @@ public class CucarellaJoseVicenteEjercicio2Main {
     }
 
 
+
     /**
      * Método para borrar un evento por su título.
      * Si el evento existe, se elimina de la lista de eventos registrados.
      * Si no se encuentra el evento, se muestra un mensaje de error.
      */
     private static void deleteEvent() {
-        System.out.print("Introduce el título del evento a borrar: ");
-        String title = scanner.nextLine();
-
-        boolean removed = events.removeIf(event -> event.getTitle().equalsIgnoreCase(title));
-        if (removed) {
-            System.out.println("Evento borrado correctamente.");
-        } else {
-            System.out.println("No se encontró ningún evento con ese título.");
+        boolean eventFound = false;
+        if (events.isEmpty()) {
+            System.out.println("No hay eventos registrados.");
+            return;
         }
+        while (!eventFound){
+            System.out.print("Introduce el título del evento a borrar: ");
+            String title = scanner.nextLine();
+            boolean removed = events.removeIf(event -> event.getTitle().equalsIgnoreCase(title));
+            if (removed) {
+                System.out.println("Evento borrado correctamente.");
+                eventFound=true;
+            } else {
+                System.out.println("No se encontró ningún evento con ese título.");
+            }
+        }
+
     }
+
+
 
     /**
      * Método para listar todos los eventos registrados.
@@ -244,6 +260,8 @@ public class CucarellaJoseVicenteEjercicio2Main {
         }
         events.forEach(System.out::println);
     }
+
+
 
     /**
      * Método para marcar o desmarcar una tarea de un evento como completada.
