@@ -1,13 +1,12 @@
 import java.time.LocalDate;
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.DateTimeException;
 
 /**
  * Clase principal que gestiona el menú de opciones.
  * Permite al usuario gestionar eventos, incluyendo la creación, eliminación, listado y la manipulación de tareas asociadas a los eventos.
  */
-
 public class CucarellaJoseVicenteEjercicio2Main {
     private static final ArrayList<CucarellaJoseVicenteEjercicio2Event> events = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
@@ -15,9 +14,8 @@ public class CucarellaJoseVicenteEjercicio2Main {
     /**
      * Método principal que ejecuta el menú de opciones.
      * Controla el flujo de ejecución y las opciones que el usuario puede seleccionar.
-     * El menú incluye opciones para añadir, borrar, listar eventos, y marcar tareas como completadas.
+     * El menú incluye opciones para añadir, borrar, listar eventos, y marcar tareas asociadas como completadas.
      */
-
     public static void main(String[] args) {
         while (true) {
             printMenu();
@@ -51,7 +49,6 @@ public class CucarellaJoseVicenteEjercicio2Main {
      * Muestra el menú de opciones al usuario.
      * Incluye opciones para añadir, borrar, listar eventos, marcar tareas y salir del programa.
      */
-
     private static void printMenu() {
         System.out.println("\nBienvenido a Event Planner. Seleccione una opción:");
         System.out.println("[1] Añadir evento");
@@ -67,63 +64,100 @@ public class CucarellaJoseVicenteEjercicio2Main {
      * Solicita al usuario el título del evento, la fecha (día, mes y año), y la prioridad (HIGH, MEDIUM o LOW).
      * Valida de forma interactiva cada parte de la fecha hasta que se introduzca correctamente.
      * También permite al usuario añadir tareas opcionales asociadas al evento.
-     * Detalles de validación:
-     * - El día debe estar entre 1 y 31.
-     * - El mes debe estar entre 1 y 12.
-     * - El año debe ser una fecha válida dentro del rango permitido (5 años a partir de hoy).
-     * - La prioridad debe ser HIGH, MEDIUM o LOW.
      */
     private static void addEvent() {
         System.out.print("Introduce el título del evento: ");
         String title = scanner.nextLine();
 
         // Validar fecha del evento
-        LocalDate date = null;
         Integer dia = null; // Variables auxiliares para validar individualmente cada dato
         Integer mes = null;
         Integer anio = null;
 
-        while (date == null) {
+        // Validar año
+        while (anio == null) {
+            System.out.print("Introduce el año del evento: ");
             try {
-                if (anio == null) {
-                    System.out.print("Introduce el año del evento: ");
-                    anio = Integer.parseInt(scanner.nextLine());
-                }
-
-                if (mes == null) {
-                    System.out.print("Introduce el mes del evento: ");
-                    mes = Integer.parseInt(scanner.nextLine());
-                    if (mes < 1 || mes > 12) {
-                        System.out.println("El mes tiene que estar entre 1 y 12.");
-                        mes = null; // Reiniciar si no es correcto
-                        continue;
-                    }
-                }
-
-                if (dia == null) {
-                    System.out.print("Introduce el día del evento: ");
-                    dia = Integer.parseInt(scanner.nextLine());
-                    if (dia < 1 || dia > 31) {
-                        System.out.println("El día tiene que estar entre 1 y 31.");
-                        dia = null; // Reiniciar si no es correcto
-                        continue;
-                    }else if (!esFechaDentroRango(dia, mes, anio, 5)){
-                        System.out.println("El día no es válido para el mes y año especificados.");
-                        dia = null;
-                        continue;
-                    }
-                }
-
-                if (esFechaDentroRango(dia, mes, anio, 5)) {
-                    date = LocalDate.of(anio, mes, dia);
-                } else {
-                    System.out.println("La fecha no es válida o está fuera del rango permitido (5 años a partir de hoy).");
-                    anio = null; // Reiniciar si no es correcto
-                }
+                anio = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Entrada inválida. Asegúrate de introducir valores númericos para el día, mes y año.");
+                System.out.println("Por favor, introduce un valor numérico válido para el año.");
+                continue; // Continuar pidiendo el año
+            }
+
+            // Obtener el año actual
+            int currentYear = LocalDate.now().getYear();
+
+            // Verificar que el año esté dentro del rango válido (entre el año actual y +5 años)
+            if (anio < currentYear || anio > currentYear + 5) {
+                System.out.println("El año máximo debe ser en el que estamos o +5");
+                anio = null; // Reiniciar si no es correcto
             }
         }
+
+        // Validar mes
+        boolean mesValido = false;
+        while (!mesValido) {
+            System.out.print("Introduce el mes del evento (1-12): ");
+            try {
+                mes = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor, introduce un valor numérico válido para el mes.");
+                continue; // Continuar pidiendo el mes
+            }
+
+            if (mes >= 1 && mes <= 12) {
+                int currentMonth = LocalDate.now().getMonthValue();
+                // Verificar si el mes es mayor o igual al mes actual
+                if (anio.equals(LocalDate.now().getYear()) && mes < currentMonth) {
+                    System.out.println("El mes introducido ya ha pasado. Introduce un mes válido.");
+                } else {
+                    mesValido = true; // El mes es válido
+                }
+            } else {
+                System.out.println("El mes debe estar entre 1 y 12.");
+            }
+        }
+
+        // Validar día según el mes y año
+        boolean diaValido = false;
+        while (!diaValido) {
+            System.out.print("Introduce el día del evento (1-31): ");
+            try {
+                dia = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor, introduce un valor numérico válido para el día.");
+                continue; // Continuar pidiendo el día
+            }
+
+            // Verifica si el día es válido para el mes y el año
+            if (dia < 1 || dia > 31) {
+                System.out.println("El día debe estar entre 1 y 31.");
+                continue;
+            }
+
+            // Comprobamos si la fecha es válida (mes y día dentro del año)
+            if (!esFechaValida(dia, mes, anio)) {
+                System.out.println("El día introducido no es válido para el mes y el año.");
+                continue;
+            }
+
+            // Verificar si la fecha ya ha pasado en relación a la fecha actual
+            LocalDate fechaIntroducida = LocalDate.of(anio, mes, dia);
+            LocalDate fechaHoy = LocalDate.now();
+
+            // Si la fecha es anterior a la actual, reiniciar el mes o día
+            if (fechaIntroducida.isBefore(fechaHoy)) {
+                if (mes < fechaHoy.getMonthValue() || (mes == fechaHoy.getMonthValue() && dia < fechaHoy.getDayOfMonth())) {
+                    System.out.println("La fecha introducida ya ha pasado. Introduce una fecha futura.");
+                    continue; // Continuamos con la validación del día o mes
+                }
+            }
+
+            diaValido = true; // Si la fecha es válida, salimos del bucle
+        }
+
+        // Crear el evento con los datos válidos (solo crear el objeto una vez con fecha validada)
+        LocalDate date = LocalDate.of(anio, mes, dia);
 
         // Validar prioridad del evento
         System.out.print("Introduce la prioridad (HIGH, MEDIUM, LOW): ");
@@ -141,27 +175,49 @@ public class CucarellaJoseVicenteEjercicio2Main {
 
         // Añadir tareas opcionales
         System.out.print("¿Quieres añadir tareas? (s/n): ");
-        boolean addingTasks = scanner.nextLine().equalsIgnoreCase("s");
+        String input = scanner.nextLine().trim().toLowerCase();
 
-        while (addingTasks) {
-            System.out.print("Introduce la descripción de la tarea: ");
-            event.addTask(new CucarellaJoseVicenteEjercicio2EventTask(scanner.nextLine()));
-
-            System.out.print("¿Agregar otra tarea? (s/n): ");
-            addingTasks = scanner.nextLine().equalsIgnoreCase("s");
+        // Validar la entrada inicial
+        while (!input.equals("s") && !input.equals("n")) {
+            System.out.println("Entrada no válida. Por favor, introduce 's' para sí o 'n' para no.");
+            System.out.print("¿Quieres añadir tareas? (s/n): ");
+            input = scanner.nextLine().trim().toLowerCase();
         }
 
-        // Añadir el evento a la lista global
+        boolean addingTasks = input.equals("s");
+        while (addingTasks) {
+            System.out.print("Introduce la descripción de la tarea: ");
+            String taskDescription = scanner.nextLine().trim();
+
+            if (taskDescription.isEmpty()) {
+                System.out.println("La descripción de la tarea no puede estar vacía. Por favor, introduce una descripción válida.");
+            } else {
+                event.addTask(new CucarellaJoseVicenteEjercicio2EventTask(taskDescription));
+                System.out.println("Tarea añadida correctamente.");
+            }
+
+            System.out.print("¿Agregar otra tarea? (s/n): ");
+            input = scanner.nextLine().trim().toLowerCase();
+
+            while (!input.equals("s") && !input.equals("n")) {
+                System.out.println("Entrada no válida. Por favor, introduce 's' para sí o 'n' para no.");
+                System.out.print("¿Agregar otra tarea? (s/n): ");
+                input = scanner.nextLine().trim().toLowerCase();
+            }
+
+            addingTasks = input.equals("s");
+        }
+
         events.add(event);
         System.out.println("Evento añadido correctamente.");
     }
+
 
     /**
      * Método para borrar un evento por su título.
      * Si el evento existe, se elimina de la lista de eventos registrados.
      * Si no se encuentra el evento, se muestra un mensaje de error.
      */
-
     private static void deleteEvent() {
         System.out.print("Introduce el título del evento a borrar: ");
         String title = scanner.nextLine();
@@ -178,7 +234,6 @@ public class CucarellaJoseVicenteEjercicio2Main {
      * Método para listar todos los eventos registrados.
      * Si no hay eventos, muestra un mensaje indicándolo.
      */
-
     private static void listEvents() {
         if (events.isEmpty()) {
             System.out.println("No hay eventos registrados.");
@@ -190,21 +245,24 @@ public class CucarellaJoseVicenteEjercicio2Main {
     /**
      * Método para marcar o desmarcar una tarea de un evento como completada.
      * Solicita al usuario el título del evento, busca el evento correspondiente,
-     * y luego permite marcar o desmarcar tareas como completadas.
+     * y luego permite marcar o desmarcar las tareas asociadas.
      */
-
     private static void completeTask() {
-        System.out.print("Introduce el título del evento: ");
-        String title = scanner.nextLine();
+        CucarellaJoseVicenteEjercicio2Event event = null;
 
-        CucarellaJoseVicenteEjercicio2Event event = events.stream()
-                .filter(e -> e.getTitle().equalsIgnoreCase(title))
-                .findFirst()
-                .orElse(null);
+        // Bucle para obtener un evento válido
+        while (event == null) {
+            System.out.print("Introduce el título del evento: ");
+            String title = scanner.nextLine();
 
-        if (event == null) {
-            System.out.println("No se encontró ningún evento con ese título.");
-            return;
+            event = events.stream()
+                    .filter(e -> e.getTitle().equalsIgnoreCase(title))
+                    .findFirst()
+                    .orElse(null);
+
+            if (event == null) {
+                System.out.println("Evento no encontrado. Inténtalo de nuevo.");
+            }
         }
 
         ArrayList<CucarellaJoseVicenteEjercicio2EventTask> tasks = event.getTasks();
@@ -218,45 +276,41 @@ public class CucarellaJoseVicenteEjercicio2Main {
             System.out.printf("[%d] %s%n", i + 1, tasks.get(i));
         }
 
-        System.out.print("Selecciona el número de la tarea a marcar/desmarcar: ");
-        int taskIndex = Integer.parseInt(scanner.nextLine()) - 1;
+        boolean validInput = false; // Variable de control para el bucle de selección de tarea
+        do {
+            System.out.print("Selecciona el número de la tarea a marcar/desmarcar: ");
+            try {
+                int taskIndex = Integer.parseInt(scanner.nextLine()) - 1;
 
-        if (taskIndex >= 0 && taskIndex < tasks.size()) {
-            CucarellaJoseVicenteEjercicio2EventTask task = tasks.get(taskIndex);
-            task.setCompleted(!task.isCompleted());
-            System.out.println("Tarea actualizada correctamente.");
-        } else {
-            System.out.println("Número de tarea inválido.");
-        }
+                if (taskIndex >= 0 && taskIndex < tasks.size()) {
+                    CucarellaJoseVicenteEjercicio2EventTask task = tasks.get(taskIndex);
+                    task.setCompleted(!task.isCompleted());
+                    System.out.println("Tarea actualizada correctamente.");
+                    validInput = true; // Salir del bucle
+                } else {
+                    System.out.println("Número de tarea inválido. Inténtalo de nuevo.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada no válida. Introduce un número correspondiente a una tarea.");
+            }
+        } while (!validInput); // Repite hasta que la entrada sea válida
     }
 
+
+
     /**
-     * Comprueba si una fecha es válida y está dentro de un rango permitido.
-     * Esta función verifica que la fecha proporcionada no sea antes de la fecha actual
-     * ni después de un número máximo de años en el futuro especificado.
-     * @param dia         El día del mes (1-31). Debe ser un número válido para el mes especificado.
-     * @param mes         El mes del año (1-12). Debe ser un número válido entre 1 y 12.
-     * @param anio        El año de la fecha. Debe ser un año válido.
-     * @param rangoFuturo El número máximo de años en el futuro permitidos. Este valor debe ser positivo.
-     *                    Define el rango máximo de la fecha permitida a partir de la fecha actual.
-     * @return true si la fecha es válida y está dentro del rango permitido, false en caso contrario.
-     * Si la fecha es inválida (por ejemplo, día fuera del rango para el mes, fecha incorrecta),
-     * o si la fecha está fuera del rango permitido (más allá del rango de años futuro especificado),
-     * el método retornará {@code false}.
+     * Método para verificar si una fecha es válida según el mes y el año proporcionados.
+     * @param dia El día a verificar.
+     * @param mes El mes a verificar.
+     * @param anio El año a verificar.
+     * @return true si la fecha es válida, false si no lo es.
      */
-
-    public static boolean esFechaDentroRango(int dia, int mes, int anio, int rangoFuturo) {
+    private static boolean esFechaValida(int dia, int mes, int anio) {
         try {
-            // Intentar crear una fecha con los parámetros proporcionados
-            LocalDate fecha = LocalDate.of(anio, mes, dia);
-            LocalDate hoy = LocalDate.now();
-            LocalDate maxFecha = hoy.plusYears(rangoFuturo);
-
-            // Comprobar si la fecha está dentro del rango permitido
-            return !fecha.isBefore(hoy) && !fecha.isAfter(maxFecha);
+            LocalDate.of(anio, mes, dia); // Si es una fecha válida, no lanzará una excepción
+            return true;
         } catch (DateTimeException e) {
-            // Si la fecha no es válida (por ejemplo, el día no existe para el mes/año dado)
-            return false;
+            return false; // Fecha inválida
         }
     }
 }
