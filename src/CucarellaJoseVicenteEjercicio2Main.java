@@ -17,16 +17,16 @@ public class CucarellaJoseVicenteEjercicio2Main {
      * El menú incluye opciones para añadir, borrar, listar eventos, y marcar tareas asociadas como completadas.
      */
     public static void main(String[] args) {
-        while (true) {
+        String option = "";
+        while (!option.equals("5")) {
             printMenu();
-            String option = scanner.nextLine();
+            option = scanner.nextLine(); // Asigna el valor ingresado a la variable 'option'
 
             switch (option) {
                 case "1":
                     addEvent();
                     break;
                 case "2":
-                    listEvents();
                     deleteEvent();
                     break;
                 case "3":
@@ -38,9 +38,10 @@ public class CucarellaJoseVicenteEjercicio2Main {
                     break;
                 case "5":
                     System.out.println("Saliendo del programa...");
-                    return;
+                    break;
                 default:
                     System.out.println("Opción no válida. Seleccione una de las opciones anteriores.");
+                    break;
             }
         }
     }
